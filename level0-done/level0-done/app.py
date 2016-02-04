@@ -1,4 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
+import requests
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -19,9 +20,16 @@ def general(alias):
 def website():
 	return "www.github.com/mgandham"
 
-@app.route("/search")
+@app.route("/search",methods=["POST", "GET"])
 def search():
-	return render_template("search.html") 
+	if request.method == "POST":
+		# User has used the search box
+		url = "https://www.googleapis.com/books/v1/volumes?q=" + request.form["user_search"]
+		response_dict = requests.get(url).json()
+		return render_template("results.html",api_data=response_dict)
+	else:
+		# User is loading the page
+		return render_template("search.html") 
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0")
