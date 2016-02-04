@@ -1,0 +1,47 @@
+h1 {
+	font-family: 'wallpaper', serif;
+	font-size: 63px;
+	background-color: #28FE23;
+	width: 100%;
+	text-align: center;
+	padding-top: 0px;
+	margin-top: 0px;
+}
+
+.extra_html { 
+  background-color: #830283;
+
+}
+
+.extra_img {
+	font-family: 'Tangerine', serif;
+    color: #000000;
+	text-align: center;
+	background-image: url("../img/kylo.jpg");
+		background-repeat: no-repeat;
+	background-position: center;
+	height: 400px;
+}
+
+.para {
+
+	font-family: 'Tangerine', serif;
+    color: #000000;
+	text-align: center;
+	background-image: url("../img/poker.jpg") ;
+	background-repeat: no-repeat;
+	background-position: center;
+	height: 400px;
+
+}
+.links {
+	margin-bottom: 0px;
+	text-align: center;
+}
+
+.bg {
+	position: fixed;
+  bottom: 0px; 
+	text-align: center;
+	width: 100%;
+}
