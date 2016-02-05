@@ -1,12 +1,27 @@
+from flask.ext.mongoengine import MongoEngine
 from flask import Flask, render_template, request
 import requests
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
+app.config['MONGODB_SETTINGS'] = { 'db' : 'books' }
 
+db = MongoEngine(app)
+class FavoriteBook(db.Document):
+	author = db.StringField(required=True)
+	title = db.StringField(required=True)
+	link = db.StringField(required=True)
 @app.route("/name")
 def name():
 	return "Manu Gandham"
+
+@app.route("/favorite/<id>")
+def favorite(id):
+	book_url = "https://www.googleapis.com/books/v1/volumes/"+id
+	book_dict = requests.get(book_url).json()
+	new_fav = FavoriteBook(author=book_dict["volumeInfo"]["authors"][0], title=book_dict["volumeInfo"]["title"], link=book_url)
+	new_fav.save()
+	return render_template("confirm.html", api_data=book_dict)
 
 @app.route("/")
 def hello():
