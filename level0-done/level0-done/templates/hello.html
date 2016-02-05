@@ -1,26 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>My Website</title>
-		<link rel="stylesheet" href="static/css/foundation.css">
-		<link rel="stylesheet" href="static/css/app.css">
-	</head>
-	<body>
-		<div class="row">
-		<div class="large-12 columns">
-		<div class="panel">
-		<h1>Hello World!</h1>
-		<p>This is a <strong>really</strong> cool paragraph. My favorite search engine is <a href="http://www.google.com">Google</a></p>
-
-		<a href="/search"><button class="launch-button">Launch App</button></a>
-		</div>
-		</div>
-		</div>	
-	</body>
-	<script src="static/js/jquery.min.js"></script>
-	<script src="static/js/foundation.js"></script>
-	<script>
-		$(document).foundation();
-	</script>
-</html>
+{% extends "base.html" %}
+{% block title %} Reading List App {% endblock %}
+{% block body %}
+	<h1>Book Finder</h1>
+	<p>This is a <strong>really</strong> cool paragraph. My favorite search engine is <a href="http://www.google.com">Google</a></p>
+	<a href="/search"><button class="launch-button">Launch App</button></a>
+{% endblock %}

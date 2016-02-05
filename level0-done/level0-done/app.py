@@ -8,7 +8,7 @@ app.config["DEBUG"] = True
 def name():
 	return "Manu Gandham"
 
-@app.route("/hello")
+@app.route("/")
 def hello():
 	return render_template("hello.html")
 
