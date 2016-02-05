@@ -8,6 +8,11 @@
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
 </head>
 <body>
+	
+	{% block header %}{% endblock %}
+
+	{% block editor %}{% endblock %}
+	
 	<div class="row">
 		<div class="large-12 columns">
 			<div class="panel">
@@ -16,6 +21,16 @@
 		</div>
 	</div>
 
+	{% block claim %}{% endblock %}
+
+	<div class="row">
+		<div class="large-12 columns">
+			<div class="panel">
+				{% block footer %}{% endblock %}
+			</div>
+		</div>
+	</div>
+	
 	<script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/foundation.js') }}"></script>
 	<script>
