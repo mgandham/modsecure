@@ -4,7 +4,6 @@ MarkupSafe==0.18
 Werkzeug==0.9.4
 argparse==1.2.1
 itsdangerous==0.23
-language-selector==0.1
 python-apt==0.8.3ubuntu7
 python-debian==0.1.21ubuntu1
 requests==2.2.1
