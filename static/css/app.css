@@ -5,7 +5,8 @@ body, html {
 }
 
 body {
-	background: black url("http://i.imgur.com/SMF6Jo8.jpg") no-repeat fixed center center;
+	background: black; 
+/*url("http://i.imgur.com/SMF6Jo8.jpg") no-repeat fixed center center;*/
 }
 
 .panel {

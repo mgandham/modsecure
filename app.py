@@ -1,8 +1,7 @@
 from flask.ext.mongoengine import MongoEngine
-from mongoengine import connect
+#from mongoengine import connect
 from wtforms import PasswordField, Form, BooleanField, TextField, validators
 from flask import Flask, render_template, request, redirect, flash
-from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
 import requests
 import os
 
@@ -11,35 +10,12 @@ app.config["DEBUG"] = True
 app.config['MONGODB_SETTINGS'] = { 'db' : 'aliases' }
 app.config['SECRET_KEY'] = 'take them glasses off and get in the pool'
 app.config['WTF_CSRF_ENABLED'] = True
-connect('db',host='mongodb://heroku_jkth7wxw:khf2ufn8j1s9ch8qb64dqq6819@ds059185.mongolab.com:59185/heroku_jkth7wxw')
+#connect('db',host='mongodb://heroku_jkth7wxw:khf2ufn8j1s9ch8qb64dqq6819@ds059185.mongolab.com:59185/heroku_jkth7wxw')
 db = MongoEngine(app)
-login_manager = LoginManager()
-login_manager.init_app(app)
 
 class LoginForm(Form):
 	plaintext = TextField('Alias',[validators.Required(), validators.length(min=6, max=18)])
 	password = PasswordField('New Password', [validators.Required(), validators.length(min=6, max=18)])
-
-class User(db.Document):
-	name = db.StringField(required=True,unique=True)
-	password = db.StringField(required=True)
-	def is_authenticated(self):
-		user = User.objects(name=self.name, password=self.password)
-		return len(users) != 0
-	def is_active(self):
-		return True
-	def is_anonymous(self):
-		return False
-	def get_id(self):
-		return self.name
-
-@login_manager.user_loader
-def load_user(name):
-	users = User.objects(name=name)
-	if len(users) != 0:
-		return users[0]
-	else:
-		return None
 
 class Alias(db.Document):
 	plaintext = db.StringField(min_length=6,max_length=18,required=True,unique=True)
@@ -59,17 +35,6 @@ class Alias(db.Document):
 	def get_id(self):
 		return self.plaintext
 
-class FavoriteBook(db.Document):
-	author = db.StringField(required=True)
-	title = db.StringField(required=True)
-	link = db.StringField(required=True)
-	poster = db.ReferenceField(User)
-
-@app.route("/logout")
-def logout():
-	logout_user()
-	return redirect("/")
-
 @app.route("/login", methods=['GET', 'POST'])
 def login():
 	form = LoginForm(request.form)
@@ -81,8 +46,7 @@ def login():
 			print('alias found in db')
 			# alias is already registered, check if password matches
 			if form.password.data == registered_alias[0].password:
-				login_user(registered_alias[0])
-				return redirect("/"+registered_alias[0].plaintext+"")
+				return render_template("edit_profile.html",alpha=registered_alias[0])
 			else:
 				# alias's password doesn't match (might have expired)
 				return redirect("/login")
@@ -90,16 +54,12 @@ def login():
 			# alias is not registered, in which case register it
 			new_alias = Alias(plaintext = form.plaintext.data, password = "DUMMY92", location="", beacon_w = False, beacon_p = False, beacon_z = False, timestamp="")
 			new_alias.save()
-			flash('new alias saved')
-			return redirect('/'+new_alias.plaintext+'')
+			newly_registered_alias=Alias.objects(plaintext=new_alias.plaintext)
+			return render_template("edit_profile.html",alpha=newly_registered_alias[0])
 	else:
 		return render_template("login.html", form=form)
-@app.route("/name")
-def name():
-	return "Manu Gandham"
 
 @app.route("/favorite/<id>")
-@login_required
 def favorite(id):
 	book_url = "https://www.googleapis.com/books/v1/volumes/"+id
 	book_dict = requests.get(book_url).json()
@@ -109,55 +69,24 @@ def favorite(id):
 	return render_template("confirm.html", api_data=book_dict)
 
 @app.route("/favorites")
-@login_required
 def favorites():
 	current_poster = User.objects(name=current_user.name).first()
 	favorites = FavoriteBook.objects(poster=current_poster);
 	return render_template("favorites.html", current_user=current_user, favorites=favorites)
 
 @app.route("/")
-def hello():
-	return render_template("hello.html")
+def home():
+	return render_template("home.html")
 
 @app.route("/<alias>")
 def general(alias):
-	print current_user.plaintext
-	if current_user.is_authenticated and alias == current_user.plaintext:
-#		alpha = Alias.objects(plaintext=current_user.plaintext).first()
-#		if len(alpha)>=1:
-		return render_template("edit_profile.html",alpha=current_user)
+	beta = Alias.objects(plaintext=alias);
+	if len(beta)>=1:
+		return render_template("profile.html",beta=beta[0])
 	else:
-		beta = Alias.objects(plaintext=alias);
-		if len(beta)>=1:
-			return render_template("profile.html",beta=beta[0])
-		else:
-			form = LoginForm(request.form)
-			form.plaintext.data = alias 
-			return render_template("login.html",form=form)
-
-@app.route("/website")
-def website():
-	return "www.github.com/mgandham"
-
-@app.route("/register", methods=["POST", "GET"])
-def register():
-	form = UserForm(request.form)
-	if request.method == 'POST' and form.validate():
-		form.save()
-		return redirect("/login")
-	else:
-		return render_template("register.html", form=form)
-
-@app.route("/search",methods=["POST", "GET"])
-def search():
-	if request.method == "POST":
-		# User has used the search box
-		url = "https://www.googleapis.com/books/v1/volumes?q=" + request.form["user_search"]
-		response_dict = requests.get(url).json()
-		return render_template("results.html",api_data=response_dict)
-	else:
-		# User is loading the page
-		return render_template("search.html") 
+		form = LoginForm(request.form)
+		form.plaintext.data = alias 
+		return render_template("login.html",form=form)
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0",port=int(os.environ.get('PORT',5000)))
