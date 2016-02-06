@@ -2,4 +2,72 @@
 {% block title %}/{{beta.plaintext}}{% endblock %}
 {% block body %}
 <h1>/{{beta.plaintext}}</h1>
+<div id="mapholder"></div>
+
+<script>
+var x = document.getElementById("demo");
+
+window.onload = function getLocation() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition, showError);
+    } else {
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+
+function showPosition(position) {
+    var latlon = position.coords.latitude + "," + position.coords.longitude;
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false";
+    document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
+}
+
+function showError(error) {
+    switch(error.code) {
+        case error.PERMISSION_DENIED:
+            x.innerHTML = "User denied the request for Geolocation.";
+            break;
+        case error.POSITION_UNAVAILABLE:
+            x.innerHTML = "Location information is unavailable.";
+            break;
+        case error.TIMEOUT:
+            x.innerHTML = "The request to get user location timed out.";
+            break;
+        case error.UNKNOWN_ERROR:
+            x.innerHTML = "An unknown error occurred.";
+            break;
+    }
+}
+</script>
+<div class="row">
+	<div class="small-4 columns">
+		<img src="/static/img/beacon_w.png" height="100" width="100" alt="Work:">
+		<div class="switch large">
+        		<input class="switch-input" id="switch_w" type="checkbox" name="switch_w">
+        		<label class="switch-paddle" for="switch_w">
+          		<span class="switch-active" aria-hidden="true"></span>
+          		<span class="switch-inactive" aria-hidden="true"></span>
+        		</label>
+		</div>
+	</div>
+	<div class="small-4 columns">
+		<img src="/static/img/beacon_p.png" height="100" width="100" alt="Play:">
+		<div class="switch large">
+        		<input class="switch-input" id="switch_p" type="checkbox" name="switch_p">
+        		<label class="switch-paddle" for="switch_p">
+          		<span class="switch-active" aria-hidden="true"></span>
+          		<span class="switch-inactive" aria-hidden="true"></span>
+        		</label>
+		</div>
+	</div>
+	<div class="small-4 columns">
+		<img src="/static/img/beacon_z.png" height="100" width="100" alt="Recover:">
+		<div class="switch large">
+        		<input class="switch-input" id="switch_z" type="checkbox" name="switch_z">
+        		<label class="switch-paddle" for="switch_z">
+          		<span class="switch-active" aria-hidden="true"></span>
+          		<span class="switch-inactive" aria-hidden="true"></span>
+        		</label>
+		</div>
+	</div>
+</div>
 {% endblock %}

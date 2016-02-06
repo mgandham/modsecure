@@ -25,6 +25,10 @@ body {
 
 }
 
+.switch {
+	padding-top:20px;
+}
+
 h2 {
 	color: white;
 }
@@ -42,7 +46,7 @@ h2 {
 }
 
 .panel {
-	margin-top: 80px;
+	margin-top: 65px;
 	text-align: center;
 	padding: 15px 0px 70px 0px;
 }
