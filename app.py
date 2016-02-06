@@ -121,6 +121,7 @@ def hello():
 
 @app.route("/<alias>")
 def general(alias):
+	print current_user.is_authenticated
 	if current_user.is_authenticated and alias == current_user.plaintext:
 #		alpha = Alias.objects(plaintext=current_user.plaintext).first()
 #		if len(alpha)>=1:
