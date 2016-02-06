@@ -3,6 +3,7 @@ from wtforms import PasswordField, Form, BooleanField, TextField, validators
 from flask import Flask, render_template, request, redirect, flash
 from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
 import requests
+import os
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -146,5 +147,5 @@ def search():
 		return render_template("search.html") 
 
 if __name__ == "__main__":
-	app.run(host="0.0.0.0")
+	app.run(host="0.0.0.0",port=int(os.environ.get('PORT',5000)))
 	
