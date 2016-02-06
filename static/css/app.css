@@ -4,25 +4,61 @@ body, html {
 	width: 100%;
 }
 
+table {
+	border: none;
+	outline: none;
+	cellspacing="0";
+	cellpadding="0";
+	border-collapse: collapse;
+}
+
+tr {
+	background-image: url('pw_maze_black.png');
+	background-repeat: repeat;
+	border: none;
+}
+
+
 body {
-	background: black; 
-/*url("http://i.imgur.com/SMF6Jo8.jpg") no-repeat fixed center center;*/
+	background-image: url('pw_maze_black.png');
+	background-repeat: repeat;
+
+}
+
+h2 {
+	color: white;
+}
+
+.homelink {
+	color: white;
+	float: left;
+	padding-left:8px;
+}
+
+.loginlink {
+	color: white;
+	float: right;
+	padding-right:8px;
 }
 
 .panel {
 	margin-top: 80px;
 	text-align: center;
-	background-color: rgba(242, 242, 242, 0.9);
 	padding: 15px 0px 70px 0px;
 }
 
 .panel h1 {
 	font-size: 3rem;
+	color: white;
 }
 
 .panel p {
 	font-size: 1.3rem;
 	padding: 20px 0px;
+}
+
+p {
+	color: white;
 }
 
 button {

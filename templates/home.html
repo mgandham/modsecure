@@ -1,7 +1,11 @@
 {% extends "base.html" %}
-{% block title %} Reading List App {% endblock %}
+{% block title %}modsecure.com{% endblock %}
+{% block header %}
+{% endblock %}
 {% block body %}
 	<h1>Book Finder</h1>
 	<p>This is a <strong>really</strong> cool paragraph. My favorite search engine is <a href="http://www.google.com">Google</a></p>
-	<a href="/login"><button class="launch-button">Login</button></a>
+	<input type="text" placeholder="Enter an alias to lookup" name="alias_lookup" required>
+	<button class="launch-button">Go</button>
 {% endblock %}
+

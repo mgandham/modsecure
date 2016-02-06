@@ -9,28 +9,25 @@
 </head>
 <body>
 	
-	{% block header %}{% endblock %}
+	{% block header %}
+	<div style="clear: both;">
+	<div class="homelink">
+		<a href="/">modsecure.com</a>
+	</div>
+	<div class="loginlink">
+		<a href="/login">Login</a>
+	</div>
+	</div>
+	{% endblock %}
 
-	{% block editor %}{% endblock %}
-	
 	<div class="row">
-		<div class="large-12 columns">
+		<div class="large-8 columns">
 			<div class="panel">
 				{% block body %}{% endblock %}
 			</div>
 		</div>
 	</div>
 
-	{% block claim %}{% endblock %}
-
-	<div class="row">
-		<div class="large-12 columns">
-			<div class="panel">
-				{% block footer %}{% endblock %}
-			</div>
-		</div>
-	</div>
-	
 	<script src="{{ url_for('static', filename='js/vendor/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='js/foundation.js') }}"></script>
 	<script>

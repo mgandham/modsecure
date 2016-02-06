@@ -1,8 +1,15 @@
 {% extends "base.html" %}
 {% block title %}Login{% endblock %}
+{% block header %}
+{% endblock %}
 {% block body %}
-<h2>Login or claim new alias</h2>
-
+{% if form.plaintext.data != None %}
+<h2>Register this alias</h2>
+<p>Simply enter a desired password.<p>
+{% else %}
+<h2>Sign in</h2>
+<p>Enter your alias and password.<p>
+{% endif %}
 <form action="/login" method="POST">
 	{{ form.csrf_token }}
 	<div>
@@ -13,7 +20,7 @@
 		{{ form.password.label }}
 		{{ form.password }}
 	</div>
-	<button class="search-button" type="submit">Login</button>
+	<button class="search-button" type="submit">Go</button>
 </form>
 {% endblock %}
 
