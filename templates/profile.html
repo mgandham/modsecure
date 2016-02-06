@@ -4,10 +4,14 @@
 <h1>/{{beta.plaintext}}</h1>
 <div id="mapholder"></div>
 
+<p id="demo"></p>
+
+<div id="mapholder"></div>
+
 <script>
 var x = document.getElementById("demo");
 
-window.onload = function getLocation() {
+window.onload=function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(showPosition, showError);
     } else {
@@ -17,32 +21,43 @@ window.onload = function getLocation() {
 
 function showPosition(position) {
     var latlon = position.coords.latitude + "," + position.coords.longitude;
-    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false";
+
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="
+    +latlon+"&zoom=14&size=400x300&sensor=false";
     document.getElementById("mapholder").innerHTML = "<img src='"+img_url+"'>";
 }
 
 function showError(error) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
-            x.innerHTML = "User denied the request for Geolocation.";
+            x.innerHTML = "User denied the request for Geolocation."
             break;
         case error.POSITION_UNAVAILABLE:
-            x.innerHTML = "Location information is unavailable.";
+            x.innerHTML = "Location information is unavailable."
             break;
         case error.TIMEOUT:
-            x.innerHTML = "The request to get user location timed out.";
+            x.innerHTML = "The request to get user location timed out."
             break;
         case error.UNKNOWN_ERROR:
-            x.innerHTML = "An unknown error occurred.";
+            x.innerHTML = "An unknown error occurred."
             break;
     }
+}
+</script>
+<script>
+var x = document.getElementById("demo");
+window.onload=function oldPosition(){
+    if {{ beta.location }} != (None || ""):
+    var img_url = "http://maps.googleapis.com/maps/api/staticmap?center="+{{beta.location}}+"&zoom=14&size=400x300&sensor=false";
 }
 </script>
 <div class="row">
 	<div class="small-4 columns">
 		<img src="/static/img/beacon_w.png" height="100" width="100" alt="Work:">
 		<div class="switch large">
-        		<input class="switch-input" id="switch_w" type="checkbox" name="switch_w">
+        		<input class="switch-input" disabled="True" id="switch_w" type="checkbox" name="switch_w"{%if beta.beacon_w %}
+checked
+{% endif %} >
         		<label class="switch-paddle" for="switch_w">
           		<span class="switch-active" aria-hidden="true"></span>
           		<span class="switch-inactive" aria-hidden="true"></span>
@@ -52,7 +67,9 @@ function showError(error) {
 	<div class="small-4 columns">
 		<img src="/static/img/beacon_p.png" height="100" width="100" alt="Play:">
 		<div class="switch large">
-        		<input class="switch-input" id="switch_p" type="checkbox" name="switch_p">
+        		<input class="switch-input"  disabled="True" id="switch_p" type="checkbox" name="switch_p"{%if beta.beacon_p %}
+checked
+{% endif %} >
         		<label class="switch-paddle" for="switch_p">
           		<span class="switch-active" aria-hidden="true"></span>
           		<span class="switch-inactive" aria-hidden="true"></span>
@@ -62,12 +79,27 @@ function showError(error) {
 	<div class="small-4 columns">
 		<img src="/static/img/beacon_z.png" height="100" width="100" alt="Recover:">
 		<div class="switch large">
-        		<input class="switch-input" id="switch_z" type="checkbox" name="switch_z">
+        		<input class="switch-input"  disabled="True" id="switch_z" type="checkbox" name="switch_z"{%if beta.beacon_z %}
+checked
+{% endif %}>
         		<label class="switch-paddle" for="switch_z">
           		<span class="switch-active" aria-hidden="true"></span>
           		<span class="switch-inactive" aria-hidden="true"></span>
         		</label>
 		</div>
 	</div>
+</div>
+<ul>
+{% for stock in jsonLoc["quote"] %}
+<li>
+<p>Symbol: {{stock.Symbol}} </p>
+<p>YesterdayClosingPrice: {{stock.PreviousClose}} </p>
+<p>OpenPrice: {{stock.Open}} </p>
+<p>Volume: {{stock.Volume}} </p>
+</li>
+{% endfor %}
+</ul>
+<div id="demo2">weather
+ {{jsonApiWeather|safe}}
 </div>
 {% endblock %}

@@ -10,8 +10,17 @@ table {
 	cellspacing="0";
 	cellpadding="0";
 	border-collapse: collapse;
-}
 
+}
+div {
+	color: white;
+}
+#demo2 {
+	color: white;
+}
+ul {
+	color: white;
+}
 tr {
 	background-image: url('pw_maze_black.png');
 	background-repeat: repeat;
