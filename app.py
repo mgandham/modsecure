@@ -121,13 +121,14 @@ def hello():
 
 @app.route("/<alias>")
 def general(alias):
-	alpha = Alias.objects(plaintext=current_user.plaintext).first()
-	if len(alpha)>=1:
-		return render_template("edit_profile.html",alpha[0])
+	if current_user.is_authenticated and alias == current_user.plaintext:
+		alpha = Alias.objects(plaintext=current_user.plaintext).first()
+		if len(alpha)>=1:
+			return render_template("edit_profile.html",alpha=alpha[0])
 	else:
 		beta = Alias.objects(plaintext=alias);
 		if len(beta)>=1:
-			return render_template("profile.html")
+			return render_template("profile.html",beta=beta[0])
 		else:
 			form = LoginForm(request.form)
 			form.plaintext.data = alias 
