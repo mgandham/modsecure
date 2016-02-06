@@ -1,8 +1,7 @@
-from wtforms import PasswordField, Form, BooleanField, TextField, validators
-from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.ext.mongoengine import MongoEngine
-from flask.ext.mongoengine.wtf import model_form
+from wtforms import PasswordField, Form, BooleanField, TextField, validators
 from flask import Flask, render_template, request, redirect, flash
+from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
 import requests
 
 app = Flask(__name__)
