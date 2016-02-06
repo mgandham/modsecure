@@ -1,18 +1,22 @@
 from flask.ext.mongoengine.wtf import model_form
-from wtforms import PasswordField
+from wtforms import PasswordField, Form, BooleanField, TextField, validators
 from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
 from flask.ext.mongoengine import MongoEngine
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 import requests
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
-app.config['MONGODB_SETTINGS'] = { 'db' : 'books' }
+app.config['MONGODB_SETTINGS'] = { 'db' : 'aliases' }
 app.config['SECRET_KEY'] = 'take them glasses off and get in the pool'
 app.config['WTF_CSRF_ENABLED'] = True
 db = MongoEngine(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+class LoginForm(Form):
+	plaintext = TextField('Alias',[validators.Required(), validators.length(min=6, max=18)])
+	password = PasswordField('New Password', [validators.Required(), validators.length(min=6, max=18)])
 
 class User(db.Document):
 	name = db.StringField(required=True,unique=True)
@@ -26,8 +30,7 @@ class User(db.Document):
 		return False
 	def get_id(self):
 		return self.name
-UserForm = model_form(User)
-UserForm.password = PasswordField('password')
+
 @login_manager.user_loader
 def load_user(name):
 	users = User.objects(name=name)
@@ -37,13 +40,13 @@ def load_user(name):
 		return None
 
 class Alias(db.Document):
-	plaintext = db.StringField(required=True,unique=True)
-	password = db.StringField(required=True)
-	location = db.StringField
-	beacon_w = db.BooleanField
-	beacon_p = db.BooleanField
-	beacon_z = db.BooleanField
-	timestamp = db.DateTimeField
+	plaintext = db.StringField(min_length=6,max_length=18,required=True,unique=True)
+	password = db.StringField(min_length=6, max_length=18,required=True)
+	location = db.StringField(required=False)
+	beacon_w = db.BooleanField(required=False)
+	beacon_p = db.BooleanField(required=False)
+	beacon_z = db.BooleanField(required=False)
+	timestamp = db.StringField(required=False)
 	def is_authenticated(self):
 		alias = Alias.objects(name=self.name, password=self.password)
 		return len(alias) != 0
@@ -67,16 +70,28 @@ def logout():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-	form = UserForm(request.form)
+	form = LoginForm(request.form)
 	if request.method == 'POST' and form.validate():
-		registered_users = User.objects(name=form.name.data,password=form.password.data)
-		if len(registered_users) == 0:
-			return redirect('/login')
+		registered_alias = Alias.objects(plaintext=form.plaintext.data)
+		for alias in registered_alias:
+			print alias.timestamp + "test"
+		if len(registered_alias) >= 1:
+			print('alias found in db')
+			# alias is already registered, check if password matches
+			if form.password.data == registered_alias.password:
+				login_user(registered_alias[0])
+				return redirect('/'+registered_alias[0].plaintext+'')
+			else:
+				# alias's password doesn't match (might have expired)
+				return redirect('/login')
 		else:
-			login_user(registered_users[0])
-			return redirect('/search')
-	return render_template('login.html', form=form)
-
+			# alias is not registered, in which case register it
+			new_alias = Alias(plaintext = form.plaintext.data, password = "DUMMY", location="", beacon_w = False, beacon_p = False, beacon_z = False, timestamp="")
+			new_alias.save()
+			flash('new alias saved')
+			return redirect('/'+new_alias.plaintext+'')
+	else:
+		return render_template("login.html", form=form)
 @app.route("/name")
 def name():
 	return "Manu Gandham"
