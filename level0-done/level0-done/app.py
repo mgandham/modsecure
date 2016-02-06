@@ -48,14 +48,14 @@ class Alias(db.Document):
 	beacon_z = db.BooleanField(required=False)
 	timestamp = db.StringField(required=False)
 	def is_authenticated(self):
-		alias = Alias.objects(name=self.name, password=self.password)
+		alias = Alias.objects(plaintext=self.plaintext, password=self.password)
 		return len(alias) != 0
 	def is_active(self):
 		return True
 	def is_anonymous(self):
 		return False
 	def get_id(self):
-		return self.name
+		return self.plaintext
 
 class FavoriteBook(db.Document):
 	author = db.StringField(required=True)
@@ -74,11 +74,11 @@ def login():
 	if request.method == 'POST' and form.validate():
 		registered_alias = Alias.objects(plaintext=form.plaintext.data)
 		for alias in registered_alias:
-			print alias.timestamp + "test"
+			print alias.plaintext+ " test "+alias.password
 		if len(registered_alias) >= 1:
 			print('alias found in db')
 			# alias is already registered, check if password matches
-			if form.password.data == registered_alias.password:
+			if form.password.data == registered_alias[0].password:
 				login_user(registered_alias[0])
 				return redirect('/'+registered_alias[0].plaintext+'')
 			else:
@@ -86,7 +86,7 @@ def login():
 				return redirect('/login')
 		else:
 			# alias is not registered, in which case register it
-			new_alias = Alias(plaintext = form.plaintext.data, password = "DUMMY", location="", beacon_w = False, beacon_p = False, beacon_z = False, timestamp="")
+			new_alias = Alias(plaintext = form.plaintext.data, password = "DUMMY92", location="", beacon_w = False, beacon_p = False, beacon_z = False, timestamp="")
 			new_alias.save()
 			flash('new alias saved')
 			return redirect('/'+new_alias.plaintext+'')
