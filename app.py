@@ -1,4 +1,5 @@
 from flask.ext.mongoengine import MongoEngine
+from mongoengine import connect
 from wtforms import PasswordField, Form, BooleanField, TextField, validators
 from flask import Flask, render_template, request, redirect, flash
 from flask.ext.login import LoginManager, login_user, logout_user, login_required, current_user
@@ -10,6 +11,7 @@ app.config["DEBUG"] = True
 app.config['MONGODB_SETTINGS'] = { 'db' : 'aliases' }
 app.config['SECRET_KEY'] = 'take them glasses off and get in the pool'
 app.config['WTF_CSRF_ENABLED'] = True
+connect('db',host='mongodb://heroku_jkth7wxw:khf2ufn8j1s9ch8qb64dqq6819@ds059185.mongolab.com:59185/heroku_jkth7wxw')
 db = MongoEngine(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
@@ -80,10 +82,10 @@ def login():
 			# alias is already registered, check if password matches
 			if form.password.data == registered_alias[0].password:
 				login_user(registered_alias[0])
-				return redirect('/'+registered_alias[0].plaintext+'')
+				return redirect("/"+registered_alias[0].plaintext+"")
 			else:
 				# alias's password doesn't match (might have expired)
-				return redirect('/login')
+				return redirect("/login")
 		else:
 			# alias is not registered, in which case register it
 			new_alias = Alias(plaintext = form.plaintext.data, password = "DUMMY92", location="", beacon_w = False, beacon_p = False, beacon_z = False, timestamp="")
@@ -135,7 +137,6 @@ def register():
 		return render_template("register.html", form=form)
 
 @app.route("/search",methods=["POST", "GET"])
-@login_required
 def search():
 	if request.method == "POST":
 		# User has used the search box
